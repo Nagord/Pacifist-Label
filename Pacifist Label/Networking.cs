@@ -9,11 +9,7 @@ namespace Pacifist_Label
         {
             if (sender.sender == PhotonNetwork.masterClient)//checks the host sent the message and not some random client
             {
-                if (!Patch.HasBeenToldStatus) //checks if hasbeentoldstatus has been updated before updating
-                {
-                    Patch.HasBeenToldStatus = true;
-                }
-                PLServer.Instance.PacifistRun = (bool)arguments[0];
+                Patch.PacifistStatus = (bool)arguments[0];//sets pacifist status to incoming pacifist status
             }
         }
     }
@@ -24,14 +20,14 @@ namespace Pacifist_Label
         {
             if (PhotonNetwork.isMasterClient && ModMessageHelper.Instance.GetPlayerMods(newPhotonPlayer).Contains(ModMessageHelper.Instance.GetModName("PacifistLabel")))
             {
-                ModMessage.SendRPC("Dragon.PacifistLabel", "Pacifist_Label.RecievePacifistRunInfo", newPhotonPlayer, new object[] { PLServer.Instance.PacifistRun });
+                ModMessage.SendRPC("Dragon.PacifistLabel", "Pacifist_Label.RecievePacifistRunInfo", newPhotonPlayer, new object[] { PLServer.Instance.PacifistRun.GetDecrypted() });
             }
         }
     }
     [HarmonyPatch(typeof(PLServer), "Update")]
     class UpdatePacifistRun
     {
-        public static bool CachedPacifistRun = true; //fixme make me private
+        static bool CachedPacifistRun = true;
         static void Postfix()//keeps client synced with host if Pacifist run state has changed
         {
             if (PhotonNetwork.isMasterClient && CachedPacifistRun != PLServer.Instance.PacifistRun)
@@ -40,12 +36,20 @@ namespace Pacifist_Label
                 foreach (PLPlayer player in PLServer.Instance.AllPlayers)
                 {//for every player in PLServer.AllPlayers, check they have the mod and are not the local player before sending ModMessage containing current pacifist state.
                     PhotonPlayer photonplayer = player.GetPhotonPlayer();
-                    if(ModMessageHelper.Instance.GetPlayerMods(photonplayer).Contains(ModMessageHelper.Instance.GetModName("PacifistLabel")) && photonplayer != PhotonNetwork.player)
+                    if(!player.IsBot && ModMessageHelper.Instance.GetPlayerMods(photonplayer).Contains(ModMessageHelper.Instance.GetModName("PacifistLabel")) && photonplayer != PhotonNetwork.player)
                     {
-                        ModMessage.SendRPC("Dragon.PacifistLabel", "Pacifist_Label.RecievePacifistRunInfo", photonplayer, new object[] { PLServer.Instance.PacifistRun });
+                        ModMessage.SendRPC("Dragon.PacifistLabel", "Pacifist_Label.RecievePacifistRunInfo", photonplayer, new object[] { PLServer.Instance.PacifistRun.GetDecrypted() });
                     }
                 }
             }
+        }
+    }
+    [HarmonyPatch(typeof(PLServer), "Start")]
+    class PLServerStartPatch //Fixes state of Patch.PacifistStatus when going to a new server
+    {
+        static void Postfix()
+        {
+            Patch.PacifistStatus = false;
         }
     }
 }
