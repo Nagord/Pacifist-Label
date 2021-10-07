@@ -7,30 +7,20 @@ namespace Pacifist_Label
 {
     class TempCommands : IChatCommand
     {
-        public string[] CommandAliases()
+        public override string[] CommandAliases()
         {
             return new string[] { "pldebug" };
         }
 
-        public string Description()
+        public override string Description()
         {
             return "Gives debug data for pacifist label mod";
         }
 
-        public bool Execute(string arguments, int SenderID)
-        {
-            return false;
-        }
-
-        public bool PublicCommand()
+        public override bool Execute(string arguments)
         {
             PulsarPluginLoader.Utilities.Messaging.Notification($"Current Pacifist state is {PLServer.Instance.PacifistRun}, Patch.PacifistStatus is {Patch.PacifistStatus}, Networking CachedPacifistRun is {UpdatePacifistRun.CachedPacifistRun}", PLNetworkManager.Instance.LocalPlayer, 0, 10000);
             return false;
-        }
-
-        public string UsageExample()
-        {
-            return "/pldebug";
         }
     }
 }

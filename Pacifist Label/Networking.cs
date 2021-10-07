@@ -1,5 +1,5 @@
 ﻿using HarmonyLib;
-using PulsarPluginLoader;
+using PulsarModLoader;
 
 namespace Pacifist_Label
 {

@@ -1,10 +1,10 @@
-﻿using PulsarPluginLoader;
+﻿using PulsarModLoader;
 
 namespace Pacifist_Label
 {
-    public class Plugin : PulsarPlugin
+    public class Mod : PulsarMod
     {
-        public override string Version => "1.1.0";
+        public override string Version => "1.1.1";
 
         public override string Author => "Dragon";
 
