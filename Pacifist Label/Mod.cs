@@ -4,7 +4,7 @@ namespace Pacifist_Label
 {
     public class Mod : PulsarMod
     {
-        public override string Version => "1.1.1";
+        public override string Version => "1.2.0";
 
         public override string Author => "Dragon";
 

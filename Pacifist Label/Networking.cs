@@ -5,11 +5,14 @@ namespace Pacifist_Label
 {
     class RecievePacifistRunInfo : ModMessage
     {
+        public static bool PacifistStatus = false;
+        public static bool RecievedPacifistStatus = false;
         public override void HandleRPC(object[] arguments, PhotonMessageInfo sender)
         {
             if (sender.sender == PhotonNetwork.masterClient)//checks the host sent the message and not some random client
             {
-                Patch.PacifistStatus = (bool)arguments[0];//sets pacifist status to incoming pacifist status
+                PacifistStatus = (bool)arguments[0];//sets pacifist status to incoming pacifist status
+                RecievedPacifistStatus = true;
             }
         }
     }
@@ -49,7 +52,8 @@ namespace Pacifist_Label
     {
         static void Postfix()
         {
-            Patch.PacifistStatus = false;
+            RecievePacifistRunInfo.PacifistStatus = false;
+            RecievePacifistRunInfo.RecievedPacifistStatus = false;
         }
     }
 }
